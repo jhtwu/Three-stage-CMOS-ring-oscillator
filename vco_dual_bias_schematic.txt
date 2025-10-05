@@ -1,0 +1,91 @@
+VCO Dual Bias Control 電路圖
+====================================
+
+每一個 Inverter Stage 的詳細電路：
+
+                           Vdd (1.8V)
+                               |
+                               | (D)
+                           ┌───┴───┐
+                           │ PMOS  │ M_ctrl_p (W=2.0μm, L=0.15μm)
+                Vbias_p ───┤ Gate  │
+                (0.6~1.2V) │       │
+                           └───┬───┘
+                               | (S)
+                          vdd_inv (受控電源)
+                               |
+                               ├─────────┐
+                               |         |
+                           ┌───┴───┐ ┌───┴───┐
+                           │ PMOS  │ │ NMOS  │  標準 Inverter
+                   in ─────┤ Gate  │ │ Gate  ├───── in
+                           │  Mp   │ │  Mn   │
+                           └───┬───┘ └───┬───┘
+                               |         |
+                               └────┬────┘
+                                    |
+                                   out
+                                    |
+                          gnd_inv (受控地)
+                               | (D)
+                           ┌───┴───┐
+                           │ NMOS  │ M_ctrl_n (W=1.0μm, L=0.15μm)
+                Vbias_n ───┤ Gate  │
+                (0.6~1.2V) │       │
+                           └───┬───┘
+                               | (S)
+                              GND (0V)
+
+元件參數：
+---------
+PMOS Control (M_ctrl_p):
+  - Model: sky130_fd_pr__pfet_01v8
+  - W = 2.0μm, L = 0.15μm
+  - Gate 由 Vbias_p 控制
+  - 功能: 控制 inverter 的電源供應
+
+NMOS Control (M_ctrl_n):
+  - Model: sky130_fd_pr__nfet_01v8
+  - W = 1.0μm, L = 0.15μm
+  - Gate 由 Vbias_n 控制
+  - 功能: 控制 inverter 的接地路徑
+
+Inverter PMOS (Mp):
+  - Model: sky130_fd_pr__pfet_01v8
+  - W = 0.84μm, L = 0.15μm
+
+Inverter NMOS (Mn):
+  - Model: sky130_fd_pr__nfet_01v8
+  - W = 0.42μm, L = 0.15μm
+
+
+完整 3-Stage Ring Oscillator：
+
+    ┌─────────────────────────────────────────┐
+    |                                         |
+    |  ┌─────────┐      ┌─────────┐      ┌─────────┐
+    └──┤   INV1  ├──────┤   INV2  ├──────┤   INV3  ├──┐
+       └─────────┘      └─────────┘      └─────────┘  |
+          in1    out1      out1   out2      out2   in1|
+                                                       |
+       ├─────────────────────────────────────────────┘
+       回授形成振盪
+
+
+控制原理：
+---------
+1. Vbias_p 增加 → PMOS M_ctrl_p 阻抗增加 → vdd_inv 下降 → 延遲增加 → 頻率下降
+2. Vbias_n 增加 → NMOS M_ctrl_n 阻抗減少 → gnd_inv 下降 → 延遲增加 → 頻率下降
+
+當 Vbias_p = Vbias_n (對稱控制):
+- 低電壓: 兩個控制電晶體都偏導通 → 延遲大 → 低頻率
+- 中電壓 (~0.85V): 最佳平衡點 → 延遲最小 → 峰值頻率 (1.67 GHz)
+- 高電壓: PMOS 關閉、NMOS 過度開啟 → 延遲大 → 低頻率
+
+測試結果：
+---------
+Vbias = 0.6V   → 0.15 GHz
+Vbias = 0.85V  → 1.67 GHz (峰值)
+Vbias = 1.2V   → 0.25 GHz
+
+結論: 呈現峰值型 KVCO 曲線（與原始雙邊控制類似）

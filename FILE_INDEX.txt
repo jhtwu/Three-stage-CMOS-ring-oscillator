@@ -1,0 +1,97 @@
+VCO 專案檔案索引
+================================================================================
+日期: 2025-10-06
+專案: 3-Stage Ring Oscillator VCO with PMOS-only Control
+================================================================================
+
+📂 最終電路檔案
+--------------------------------------------------------------------------------
+vco_circuit_jpg.cir              主電路設計（基於 circuit.jpg）
+vco_kvco_circuit_jpg.cir         KVCO 特性掃描電路
+vco_dual_bias.sch                Xschem 電路圖檔案
+
+📂 模擬與分析腳本
+--------------------------------------------------------------------------------
+plot_circuit_jpg.py              KVCO 曲線繪圖工具
+run_xschem.sh                    Xschem 啟動腳本（含 PDK 路徑）
+xschemrc                         Xschem 配置檔案
+
+📂 模擬結果
+--------------------------------------------------------------------------------
+vco_kvco_circuit_jpg_results.csv KVCO 掃描數據（CSV 格式）
+vco_circuit_jpg_plot.png         KVCO 曲線圖表
+vco_final_output.txt             基本模擬日誌
+vco_kvco_final_output.txt        KVCO 掃描日誌
+vco_circuit_jpg.raw              ngspice 波形數據
+
+📂 文檔檔案
+--------------------------------------------------------------------------------
+README_FINAL.md                  專案總覽與檔案索引（本文件的詳細版）
+VCO_EXPERIMENT_REPORT.md         完整實驗報告（包含所有測試過程）
+VCO_QUICK_REFERENCE.md           快速參考指南（常用命令和參數）
+vco_dual_bias_schematic.txt      電路圖文字說明
+FILE_INDEX.txt                   本檔案
+
+📂 參考資料
+--------------------------------------------------------------------------------
+circuit.jpg                      參考電路圖（設計依據）
+new_vco.odt                      原始需求文件
+
+📂 歷史檔案（已歸檔）
+--------------------------------------------------------------------------------
+archive_old_experiments/         舊實驗檔案目錄
+├── vco_controlled.cir           雙邊控制版本
+├── vco_dual_bias.cir            雙 bias 控制版本
+├── vco_current_mirror_bias.cir  Current mirror 版本
+├── vco_pmos_only.cir            PMOS-only 初版
+├── vco_nmos_only.cir            NMOS-only 版本
+├── vco_size_tuned_v*.cir        尺寸調整版本（V1/V2/V3）
+├── vco_kvco_*.cir               各版本 KVCO 掃描電路
+├── plot_*.py                    舊版繪圖腳本
+├── *.csv                        舊版數據檔案
+├── *.raw                        舊版波形檔案
+└── *_output*.txt                舊版日誌檔案
+
+📂 其他舊檔案（未修改）
+--------------------------------------------------------------------------------
+ring_oscillator.cir              最原始的 ring oscillator
+test.cir                         測試電路
+vdd_sweep.cir                    Vdd 掃描電路
+plot_vdd_freq.py                 Vdd 掃描繪圖
+run_vco_sim.sh                   舊版模擬腳本
+test_all_versions.sh             舊版測試腳本
+test_single_side.sh              舊版測試腳本
+
+================================================================================
+快速導航
+================================================================================
+
+🚀 快速開始:
+   1. 閱讀: README_FINAL.md
+   2. 基本模擬: ngspice -b vco_circuit_jpg.cir
+   3. KVCO 掃描: ngspice -b vco_kvco_circuit_jpg.cir
+   4. 生成圖表: python3 plot_circuit_jpg.py
+
+📖 詳細文檔:
+   - 實驗報告: VCO_EXPERIMENT_REPORT.md
+   - 快速參考: VCO_QUICK_REFERENCE.md
+   - 專案總覽: README_FINAL.md
+
+🔧 修改電路:
+   - 編輯: vco_circuit_jpg.cir
+   - 查看圖: xschem vco_dual_bias.sch (或 ./run_xschem.sh)
+
+📊 查看結果:
+   - 數據: vco_kvco_circuit_jpg_results.csv
+   - 圖表: vco_circuit_jpg_plot.png
+
+================================================================================
+重要成果
+================================================================================
+
+✓ 單調遞減 KVCO 曲線（0.7~1.2V 範圍）
+✓ 頻率範圍: 0.25 ~ 3.68 GHz
+✓ KVCO: -6.86 GHz/V (平均)
+✓ 電路結構簡單，易於實現
+
+================================================================================

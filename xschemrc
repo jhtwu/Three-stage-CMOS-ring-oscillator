@@ -1,0 +1,71 @@
+#### xschemrc configuration for VCO project with SkyWater 130nm PDK
+
+#### User configuration directory
+set USER_CONF_DIR $env(HOME)/.xschem
+
+#### PDK paths
+set SKYWATER_MODELS /opt/pdk/sky130A/libs.tech/ngspice
+set SKYWATER_STDCELLS /opt/pdk/sky130A/libs.ref/sky130_fd_sc_hd/spice
+
+#### xschem installation directory
+if { ! [info exists XSCHEM_SHAREDIR] } {
+  set XSCHEM_SHAREDIR /usr/share/xschem
+}
+
+#### xschem system-wide design library paths
+set XSCHEM_LIBRARY_PATH {}
+
+#### Basic devices (MUST be first!)
+append XSCHEM_LIBRARY_PATH :${XSCHEM_SHAREDIR}/xschem_library/devices
+
+#### SkyWater PDK xschem library
+append XSCHEM_LIBRARY_PATH :$env(HOME)/.xschem/xschem_library
+append XSCHEM_LIBRARY_PATH :${XSCHEM_SHAREDIR}/xschem_library
+append XSCHEM_LIBRARY_PATH :/opt/pdk/sky130A/libs.tech/xschem
+
+#### Device library
+append XSCHEM_LIBRARY_PATH :/opt/pdk/sky130A/libs.tech/xschem/sky130_fd_pr
+
+#### Standard cells
+append XSCHEM_LIBRARY_PATH :/opt/pdk/sky130A/libs.tech/xschem/sky130_stdcells
+
+#### Simulation
+set netlist_dir .
+set netlist_type spice
+
+#### Colors
+set dark_colorscheme 0
+set light_colors {
+  "#ffffff" "#0044ee" "#aaaaaa" "#222222" "#229900"
+  "#bb2200" "#00ccee" "#ff0000" "#888800" "#00aaaa"
+  "#880088" "#00ff00" "#0000cc" "#666600" "#557755"
+  "#aa2222" "#7ccc40" "#00ffcc" "#ce0097" "#d2d46b"
+  "#ef6158"
+}
+
+set dark_colors {
+  "#000000" "#00ccee" "#3f3f3f" "#ffffff" "#00ff00"
+  "#ff0000" "#aaddff" "#ff00ff" "#ffff00" "#00aaaa"
+  "#ff00ff" "#888888" "#00ff00" "#999900" "#009900"
+  "#dd0000" "#7ccc40" "#00ffcc" "#ce0097" "#d2d46b"
+  "#ef6158"
+}
+
+#### Enable grid
+set enable_dim_bg 0
+set cadgrid 0
+set gridlayer 0
+set areagrid 0
+
+#### Line width
+set cadsnap 10
+set lw_mult 1
+
+#### Waveform viewer
+set waveform_viewer ngspice
+
+#### Ngspice settings
+set ngspice_command {ngspice}
+
+#### Enable netlisting
+set no_ask_save 1
