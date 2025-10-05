@@ -1,0 +1,70 @@
+* 3-Stage CMOS Ring Oscillator VCO - PMOS-Only KVCO Sweep
+* 單邊控制KVCO掃描: 只使用PMOS
+
+* PDK 路徑
+.lib /opt/pdk/sky130A/libs.tech/ngspice/sky130.lib.spice tt
+
+* Power Supply
+Vdd vdd 0 DC 1.8
+
+* Control Voltage (will be swept)
+Vctrl vctrl 0 DC 0.9
+
+* ========== Inverter 1 with PMOS-Only Control ==========
+XM1_ctrl_p vdd_inv1 vctrl vdd vdd sky130_fd_pr__pfet_01v8 L=0.15 W=2.0
+XM1_n out1 in1 0 0 sky130_fd_pr__nfet_01v8 L=0.15 W=0.42
+XM1_p out1 in1 vdd_inv1 vdd sky130_fd_pr__pfet_01v8 L=0.15 W=0.84
+
+* ========== Inverter 2 with PMOS-Only Control ==========
+XM2_ctrl_p vdd_inv2 vctrl vdd vdd sky130_fd_pr__pfet_01v8 L=0.15 W=2.0
+XM2_n out2 out1 0 0 sky130_fd_pr__nfet_01v8 L=0.15 W=0.42
+XM2_p out2 out1 vdd_inv2 vdd sky130_fd_pr__pfet_01v8 L=0.15 W=0.84
+
+* ========== Inverter 3 with PMOS-Only Control ==========
+XM3_ctrl_p vdd_inv3 vctrl vdd vdd sky130_fd_pr__pfet_01v8 L=0.15 W=2.0
+XM3_n in1 out2 0 0 sky130_fd_pr__nfet_01v8 L=0.15 W=0.42
+XM3_p in1 out2 vdd_inv3 vdd sky130_fd_pr__pfet_01v8 L=0.15 W=0.84
+
+* Initial condition
+.ic v(in1)=0 v(out1)=1.8 v(out2)=0
+
+* Control block
+.control
+set hcopydevtype=postscript
+
+echo "Vctrl(V),Frequency(GHz),Period(ns)" > vco_kvco_pmos_only_results.csv
+
+echo ""
+echo "========== PMOS-Only KVCO掃描 (Vctrl高→頻率低) =========="
+echo ""
+
+foreach vctrl_val 0.0 0.05 0.1 0.15 0.2 0.25 0.3 0.35 0.4 0.45 0.5 0.55 0.6 0.65 0.7 0.75 0.8 0.85 0.9 0.95 1.0 1.05 1.1 1.15 1.2 1.25 1.3 1.35 1.4 1.45 1.5 1.55 1.6 1.65 1.7 1.75 1.8
+  alter Vctrl = $vctrl_val
+  echo "正在模擬 Vctrl = $vctrl_val V..."
+
+  tran 0.1n 300n
+
+  meas tran t1 WHEN v(in1)=0.9 RISE=10
+  meas tran t2 WHEN v(in1)=0.9 RISE=11
+
+  if t2 > t1
+    let period_ns = (t2-t1)*1e9
+    let freq_GHz = 1/(t2-t1)/1e9
+    echo "$vctrl_val,$&freq_GHz,$&period_ns" >> vco_kvco_pmos_only_results.csv
+  else
+    echo "$vctrl_val,0,0" >> vco_kvco_pmos_only_results.csv
+    echo "  警告: 在 Vctrl = $vctrl_val V 時無法量測到穩定振盪"
+  end
+
+  reset
+end
+
+echo ""
+echo "==================== PMOS-Only掃描完成 ===================="
+echo "結果已儲存至: vco_kvco_pmos_only_results.csv"
+echo "=========================================================="
+echo ""
+quit
+.endc
+
+.end

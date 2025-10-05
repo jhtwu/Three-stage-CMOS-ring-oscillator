@@ -1,0 +1,62 @@
+* 3-Stage CMOS Ring Oscillator VCO - PMOS-Only Control
+* 單邊控制版本A: 只使用PMOS控制電晶體
+* Vctrl增加 → PMOS阻抗增加 → 頻率降低
+
+* PDK 路徑
+.lib /opt/pdk/sky130A/libs.tech/ngspice/sky130.lib.spice tt
+
+* Power Supply
+Vdd vdd 0 DC 1.8
+
+* Control Voltage
+Vctrl vctrl 0 DC 0.9
+
+* ========== Inverter 1 with PMOS-Only Control ==========
+* PMOS控制電晶體 (連接Vdd到反向器電源)
+XM1_ctrl_p vdd_inv1 vctrl vdd vdd sky130_fd_pr__pfet_01v8 L=0.15 W=2.0
+
+* 標準反向器 (直接接地)
+XM1_n out1 in1 0 0 sky130_fd_pr__nfet_01v8 L=0.15 W=0.42
+XM1_p out1 in1 vdd_inv1 vdd sky130_fd_pr__pfet_01v8 L=0.15 W=0.84
+
+* ========== Inverter 2 with PMOS-Only Control ==========
+* PMOS控制電晶體
+XM2_ctrl_p vdd_inv2 vctrl vdd vdd sky130_fd_pr__pfet_01v8 L=0.15 W=2.0
+
+* 標準反向器
+XM2_n out2 out1 0 0 sky130_fd_pr__nfet_01v8 L=0.15 W=0.42
+XM2_p out2 out1 vdd_inv2 vdd sky130_fd_pr__pfet_01v8 L=0.15 W=0.84
+
+* ========== Inverter 3 with PMOS-Only Control ==========
+* PMOS控制電晶體
+XM3_ctrl_p vdd_inv3 vctrl vdd vdd sky130_fd_pr__pfet_01v8 L=0.15 W=2.0
+
+* 標準反向器
+XM3_n in1 out2 0 0 sky130_fd_pr__nfet_01v8 L=0.15 W=0.42
+XM3_p in1 out2 vdd_inv3 vdd sky130_fd_pr__pfet_01v8 L=0.15 W=0.84
+
+* Initial condition
+.ic v(in1)=0 v(out1)=1.8 v(out2)=0
+
+* Transient Analysis
+.tran 0.1n 300n
+
+* Control block
+.control
+run
+plot v(in1) v(out1) v(out2)
+write vco_pmos_only.raw
+
+meas tran period TRIG v(in1) VAL=0.9 RISE=10 TARG v(in1) VAL=0.9 RISE=11
+let freq_MHz = 1/period/1e6
+
+echo ""
+echo "============== PMOS-Only Control =============="
+echo "控制方式: 只使用PMOS (Vctrl高→頻率低)"
+echo "控制電壓 Vctrl = 0.9V"
+print period freq_MHz
+echo "==============================================="
+echo ""
+.endc
+
+.end

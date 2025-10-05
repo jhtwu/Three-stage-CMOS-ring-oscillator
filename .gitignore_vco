@@ -1,0 +1,26 @@
+# VCO模擬生成的檔案
+# 可以選擇性地加入到 .gitignore
+
+# Ngspice輸出
+*.raw
+*_output.txt
+*_log.txt
+
+# 模擬結果CSV
+*_results.csv
+
+# 圖片（如果不需要版本控制）
+# vco_*.png
+# *_plot.png
+# *_comparison.png
+
+# 臨時檔案
+/tmp/vco_images/
+
+# Python快取
+__pycache__/
+*.pyc
+
+# 編輯器臨時檔
+*~
+.*.swp
