@@ -1,0 +1,7 @@
+* Test circuit
+.lib /home/jimmy/pdk/sky130A/libs.tech/ngspice/sky130.lib.spice corner=tt
+
+Vdd vdd 0 1.8V
+M1 out in vdd vdd sky130_fd_pr__pfet_01v8__tt L=0.15 W=0.84
+
+.end

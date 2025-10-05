@@ -1,0 +1,35 @@
+# 模擬輸出檔案
+*.raw
+*.log
+sim_output.txt
+vdd_sweep_output.txt
+
+# Python 快取
+__pycache__/
+*.pyc
+*.pyo
+.cache/
+
+# 模擬結果 (可選：如果想保留結果，移除下面這些)
+# vdd_freq_results.csv
+# vdd_freq_plot.png
+
+# PDK - 不要將 PDK 放入版本控制
+pdk/
+sky130A/
+*.spice.bak
+
+# 作業系統檔案
+.DS_Store
+Thumbs.db
+
+# 編輯器檔案
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# 臨時檔案
+*.tmp
+*.bak

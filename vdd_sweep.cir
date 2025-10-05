@@ -1,0 +1,61 @@
+* 3-Stage CMOS Ring Oscillator - VDD Sweep Analysis
+* 分析電壓對振盪頻率的影響
+
+* PDK 路徑 - 請設定環境變數 PDK_ROOT 或修改此行
+.lib $PDK_ROOT/sky130A/libs.tech/ngspice/sky130.lib.spice tt
+
+* Power Supply (will be swept)
+Vdd vdd 0 DC 1.8
+
+* Inverter 1
+XM1 out1 in1 0 0 sky130_fd_pr__nfet_01v8 L=0.15 W=0.42
+XM2 out1 in1 vdd vdd sky130_fd_pr__pfet_01v8 L=0.15 W=0.84
+
+* Inverter 2
+XM3 out2 out1 0 0 sky130_fd_pr__nfet_01v8 L=0.15 W=0.42
+XM4 out2 out1 vdd vdd sky130_fd_pr__pfet_01v8 L=0.15 W=0.84
+
+* Inverter 3
+XM5 in1 out2 0 0 sky130_fd_pr__nfet_01v8 L=0.15 W=0.42
+XM6 in1 out2 vdd vdd sky130_fd_pr__pfet_01v8 L=0.15 W=0.84
+
+* Initial condition
+.ic v(in1)=0 v(out1)=1.8
+
+* Control block - 掃描不同供應電壓
+.control
+* 定義電壓範圍
+set hcopydevtype=postscript
+
+* 建立結果檔案
+echo "VDD(V),Frequency(GHz),Period(ns)" > vdd_freq_results.csv
+
+* 掃描電壓從 1.2V 到 2.0V,間隔 0.1V
+foreach vdd_val 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0
+  alter Vdd = $vdd_val
+  echo "正在模擬 VDD = $vdd_val V..."
+
+  * 執行暫態分析
+  tran 0.1n 200n
+
+  * 量測週期和頻率
+  meas tran t1 WHEN v(in1)=0.9 RISE=2
+  meas tran t2 WHEN v(in1)=0.9 RISE=3
+  let period_ns = (t2-t1)*1e9
+  let freq_GHz = 1/(t2-t1)/1e9
+
+  * 將結果寫入檔案
+  echo "$vdd_val,$&freq_GHz,$&period_ns" >> vdd_freq_results.csv
+
+  * 重置電路
+  reset
+end
+
+echo ""
+echo "==================== 模擬完成 ===================="
+echo "結果已儲存至: vdd_freq_results.csv"
+echo ""
+quit
+.endc
+
+.end

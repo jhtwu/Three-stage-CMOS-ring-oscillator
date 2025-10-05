@@ -1,0 +1,38 @@
+* 3-Stage CMOS Ring Oscillator
+
+* PDK 路徑 - 請設定環境變數 PDK_ROOT 或修改此行
+.lib $PDK_ROOT/sky130A/libs.tech/ngspice/sky130.lib.spice tt
+
+* Power Supply
+Vdd vdd 0 1.8
+
+* Inverter 1 (NFET and PFET)
+XM1 out1 in1 0 0 sky130_fd_pr__nfet_01v8 L=0.15 W=0.42
+XM2 out1 in1 vdd vdd sky130_fd_pr__pfet_01v8 L=0.15 W=0.84
+
+* Inverter 2
+XM3 out2 out1 0 0 sky130_fd_pr__nfet_01v8 L=0.15 W=0.42
+XM4 out2 out1 vdd vdd sky130_fd_pr__pfet_01v8 L=0.15 W=0.84
+
+* Inverter 3 (feedback to input, forming ring)
+XM5 in1 out2 0 0 sky130_fd_pr__nfet_01v8 L=0.15 W=0.42
+XM6 in1 out2 vdd vdd sky130_fd_pr__pfet_01v8 L=0.15 W=0.84
+
+* Initial condition to start oscillation
+.ic v(in1)=0 v(out1)=1.8
+
+* Transient Analysis (模擬 200ns,每 0.1ns 記錄一次)
+.tran 0.1n 200n
+
+* Control block
+.control
+run
+plot v(in1) v(out1) v(out2)
+write ring_oscillator.raw
+* 量測振盪週期和頻率
+meas tran period TRIG v(in1) VAL=0.9 RISE=2 TARG v(in1) VAL=0.9 RISE=3
+let freq_MHz = 1/period/1e6
+print freq_MHz
+.endc
+
+.end

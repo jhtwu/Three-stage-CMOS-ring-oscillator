@@ -1,3 +1,75 @@
+# Three-Stage CMOS Ring Oscillator
+
+[English](#english) | [繁體中文](#繁體中文)
+
+---
+
+## English
+
+### Quick Start
+
+```bash
+# 1. Install PDK
+pip3 install volare
+volare enable --pdk sky130
+
+# 2. Set PDK path
+export PDK_ROOT=$HOME/.volare/volare/sky130/versions/$(ls -t $HOME/.volare/volare/sky130/versions/ | head -1)
+
+# 3. Run simulation
+./run_all.sh
+```
+
+📖 **Full Documentation**: See [專案說明_繁體中文.md](專案說明_繁體中文.md)
+🔧 **PDK Setup Guide**: See [README_PDK_SETUP.md](README_PDK_SETUP.md)
+
+---
+
+## 繁體中文
+
+### 三級 CMOS 環形振盪器
+
+使用 SkyWater 130nm PDK 實作的三級 CMOS 環形振盪器，包含完整的電壓-頻率分析。
+
+### 快速開始
+
+```bash
+# 1. 安裝 PDK
+pip3 install volare
+volare enable --pdk sky130
+
+# 2. 設定 PDK 路徑
+export PDK_ROOT=$HOME/pdk  # 或你的 PDK 位置
+
+# 3. 執行模擬
+./run_all.sh
+```
+
+### 主要特性
+
+- ✅ 完整的環形振盪器設計（3 級反相器）
+- ✅ 電壓掃描分析（1.2V ~ 2.0V）
+- ✅ 自動產生電壓-頻率關係圖
+- ✅ 支援環境變數 PDK_ROOT（方便 GitHub 分享）
+- ✅ 完整的中文文件
+
+### 模擬結果
+
+- **標準電壓 (1.8V)**: 5.60 GHz
+- **頻率範圍**: 2.51 ~ 7.08 GHz
+- **電壓範圍**: 1.2 ~ 2.0V
+
+### 文件導覽
+
+| 文件 | 說明 |
+|------|------|
+| [快速開始.md](快速開始.md) | 快速參考指南 |
+| [專案說明_繁體中文.md](專案說明_繁體中文.md) | 完整技術文件 |
+| [README_PDK_SETUP.md](README_PDK_SETUP.md) | PDK 路徑設定指南 |
+| [PDK安裝指南.md](PDK安裝指南.md) | PDK 安裝教學 |
+
+---
+
 # THREE-STAGE-CMOS-RING-OSCILLATOR
 
 - [IMPLEMENTATION-OF-THREE-STAGE-CMOS-RING-OSCILLATOR](#)
